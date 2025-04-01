@@ -1,0 +1,87 @@
+tools/
+
+# 忽略编译生成文件
+# C/C++项目
+*.o
+*.a
+*.so
+*.exe
+
+# Java项目
+*.class
+target/
+
+# Python项目
+*.pyc
+__pycache__/
+
+# 忽略编辑器和IDE生成的临时文件和配置文件
+# 常见编辑器（如VS Code、Sublime Text等）
+.vscode/
+!.vscode/extensions.json
+.sublime-workspace
+.sublime-project
+
+# IDE（如IntelliJ IDEA、Eclipse等）
+.idea/
+*.iws
+*.iml
+*.ipr
+.classpath
+.project
+.settings/
+.springbeans
+.sts4-cache
+
+# 忽略操作系统生成的隐藏文件和目录
+# Windows系统
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# macOS系统
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# 忽略特定的日志文件和缓存文件
+logs/
+*.log
+.cache/
+
+# 忽略构建工具生成的文件和目录
+# Maven项目
+target/
+!.mvn/wrapper/maven-wrapper.jar
+.flattened-pom.xml
+
+# Gradle项目
+.gradle/
+build/
+
+# 忽略本地环境配置文件
+.env
+.local.env
+
+# 其他可能需要忽略的文件或目录
+# 前端项目
+dist/
+build/
+node_modules/
+package-lock.json
+yarn.lock
+
+# 压缩文件
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# 数据库文件等
+*.mdb
+*.ldb
+*.sln
