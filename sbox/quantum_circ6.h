@@ -215,7 +215,7 @@ void qt4_inv(qubit *a) {
 }
 
 /**
- * (a[4], d[21] = 0) -> (a'[4], d'[4], d[11], c[6] = 0)
+ * (a[4], d[21] = 0) -> (a'[4], d'[15], c[6] = 0)
  */
 void qt15(qubit *a, qubit *d) {
 	cx(a[2], d[2]);
@@ -256,20 +256,20 @@ void qt15(qubit *a, qubit *d) {
 	cx(d[11], d[10]);
 	cx(d[14], d[12]);
 	cx(d[14], d[13]);
-	std::swap(d[13], d[3]);
-    std::swap(d[12], d[2]);
-    std::swap(d[10], d[1]);
-    std::swap(d[9], d[0]);
+	std::swap(d[13], a[3]);
+    std::swap(d[12], a[2]);
+    std::swap(d[10], a[1]);
+    std::swap(d[9], a[0]);
 }
 
 /**
- * (a'[4], d'[4], d[11] = 0) -> (a[4], d[15] = 0)
+ * (a'[4], d'[15]) -> (a[4], d[15] = 0)
  */
 void qt15_inv(qubit *a, qubit *d) {
-    std::swap(d[9], d[0]);
-	std::swap(d[10], d[1]);
-	std::swap(d[12], d[2]);
-	std::swap(d[13], d[3]);
+    std::swap(d[9], a[0]);
+	std::swap(d[10], a[1]);
+	std::swap(d[12], a[2]);
+	std::swap(d[13], a[3]);
 	cx(d[14], d[13]);
 	cx(d[14], d[12]);
 	cx(d[11], d[10]);
@@ -475,7 +475,7 @@ int solve(uint8_t alpha, uint8_t delta) {
 		}
 	}
 
-	qt14(a0, t1, d1, t2);
+	qt14(a0, t0, d1, t2);
 
 	{
 		for (int i = 0; i < 28; i++) {
@@ -486,7 +486,7 @@ int solve(uint8_t alpha, uint8_t delta) {
 		}
 	}
 
-	qt14(a1, t1, d0, t2);
+	qt14(a1, t0, d0, t2);
 
 	{
 		for (int i = 0; i < 28; i++) {

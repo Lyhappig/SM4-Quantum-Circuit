@@ -7,6 +7,7 @@
 #include "quantum_circ4.h"
 #include "quantum_circ5.h"
 #include "quantum_circ6.h"
+#include "quantum_circ7.h"
 
 uint8_t sm4_sbox[256] = {
     0xD6, 0x90, 0xE9, 0xFE, 0xCC, 0xE1, 0x3D, 0xB7, 0x16, 0xB6, 0x14, 0xC2, 0x28, 0xFB, 0x2C, 0x05,
@@ -29,7 +30,7 @@ uint8_t sm4_sbox[256] = {
 
 bool check_sbox(uint8_t delta) {
     uint8_t sbox[256];
-    qcirc6::get_qunatum_sbox6(sbox);
+    qcirc6::get_qunatum_sbox6(sbox, delta);
     for (int i = 0; i < 256; ++i) {
         if (sbox[i] != (delta ^ sm4_sbox[i])) {
             printf("%02X, %02X\n", sbox[i], delta ^ sm4_sbox[i]);

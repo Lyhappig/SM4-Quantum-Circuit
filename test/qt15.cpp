@@ -101,18 +101,18 @@ void qt15(int a[4], int d[21]) {
 	cx(d[11], d[10]);
 	cx(d[14], d[12]);
 	cx(d[14], d[13]);
-	std::swap(d[13], d[3]);
-    std::swap(d[12], d[2]);
-    std::swap(d[10], d[1]);
-    std::swap(d[9], d[0]);
+	std::swap(d[13], a[3]);
+    std::swap(d[12], a[2]);
+    std::swap(d[10], a[1]);
+    std::swap(d[9], a[0]);
 }
 
 // 9个QAND_1，29个CNOT
 void qt15_inv(int a[4], int d[21]) {
-	std::swap(d[9], d[0]);
-    std::swap(d[10], d[1]);
-    std::swap(d[12], d[2]);
-    std::swap(d[13], d[3]);
+	std::swap(d[9], a[0]);
+    std::swap(d[10], a[1]);
+    std::swap(d[12], a[2]);
+    std::swap(d[13], a[3]);
 	cx(d[14], d[13]);
 	cx(d[14], d[12]);
 	cx(d[11], d[10]);
@@ -164,7 +164,8 @@ int main() {
 		qt15(a, d);
 		int y1 = (z[0] << 3) | (z[1] << 2) | (z[2] << 1) | z[3];
 		// int y2 = (d[9] << 3) | (d[10] << 2) | (d[12] << 1) | d[13];
-		int y2 = (d[0] << 3) | (d[1] << 2) | (d[2] << 1) | d[3];
+		int y2 = (a[0] << 3) | (a[1] << 2) | (a[2] << 1) | a[3];
+		printf("%d %d\n", y1, y2);
 		if (y1 != y2) {
 			puts("qt15: answer doesn't match");
 			exit(0);

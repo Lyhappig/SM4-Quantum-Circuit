@@ -141,16 +141,18 @@ void qt13(int a[4], int c[6]) {
 	cx(a[3], c[1]);
 	cx(a[0], c[2]);
 	cx(a[1], c[2]);
-	std::swap(c[2], c[3]);
-	std::swap(c[2], c[1]);
-	std::swap(c[1], c[4]);
+	std::swap(c[0], a[0]);
+	std::swap(c[4], a[1]);
+	std::swap(c[1], a[2]);
+	std::swap(c[2], a[3]);
 }
 
 // 5个QAND_1，69个CNOT
 void qt13_inv(int a[4], int c[6]) {
-	std::swap(c[1], c[4]);
-	std::swap(c[2], c[1]);
-	std::swap(c[2], c[3]);
+	std::swap(c[2], a[3]);
+	std::swap(c[1], a[2]);
+	std::swap(c[4], a[1]);
+	std::swap(c[0], a[0]);
 	cx(a[1], c[2]);
 	cx(a[0], c[2]);
 	cx(a[3], c[1]);
@@ -243,7 +245,7 @@ int main() {
 		qt13(a, c);
 		int y1 = (z[0] << 3) | (z[1] << 2) | (z[2] << 1) | z[3];
 		// int y2 = (c[0] << 3) | (c[4] << 2) | (c[1] << 1) | c[2];
-		int y2 = (c[0] << 3) | (c[1] << 2) | (c[2] << 1) | c[3];
+		int y2 = (a[0] << 3) | (a[1] << 2) | (a[2] << 1) | a[3];
 		printf("%d %d\n", y1, y2);
 		if (c[5] != 0) {
 			puts("qt13: can't recover c[5]");

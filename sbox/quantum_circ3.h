@@ -298,7 +298,7 @@ void qt8_inv(qubit *a, qubit *d) {
     cx(a[2], d[2]);
 }
 
-void qt10(qubit *a, qubit *b, qubit *d, qubit *t) {
+void qt10(qubit *a, qubit *b, qubit *t, qubit *d) {
     cx(t[3], t[2]);
 	cx(t[2], t[0]);
 	cx(t[1], t[0]);
@@ -439,7 +439,7 @@ int solve(uint8_t alpha, uint8_t delta) {
 	}
 	qt4_inv(a0);
 	qt8(t0, t1);
-	qt10(a0, t0, t2, d1);
+	qt10(a0, t0, d1, t2);
 	{
 		for (int i = 0; i < 15; i++) {
 			if (t2[i] != 0) {
@@ -448,7 +448,7 @@ int solve(uint8_t alpha, uint8_t delta) {
 			}
 		}
 	}
-	qt10(a1, t0, t2, d0);
+	qt10(a1, t0, d0, t2);
 	{
 		for (int i = 0; i < 15; i++) {
 			if (t2[i] != 0) {
