@@ -10,6 +10,10 @@ namespace qcirc3 {
 const int aux_num = 34;
 qubit x[8], y[8], aux[aux_num] = {0};
 
+/**
+ * CNOT：12，NOT：4
+ * 电路深度：8
+ */
 void qt1() {
 	cx(x[6], x[7]);
     cx(x[2], x[6]);
@@ -31,6 +35,10 @@ void qt1() {
 	qx(x[6]);
 }
 
+/**
+ * CNOT：12，NOT：4
+ * 电路深度：8
+ */
 void qt1_inv() {
 	qx(x[6]);
 	qx(x[4]);
@@ -52,6 +60,11 @@ void qt1_inv() {
 	cx(x[6], x[7]);
 }
 
+/**
+ * Toffoli：14，CNOT：52
+ * Toffoli深度：2
+ * 电路深度：18
+ */
 void qt3(qubit *a, qubit *b, qubit *d) {
 	cx(a[1], d[6]);
     cx(a[3], d[6]);
@@ -121,6 +134,11 @@ void qt3(qubit *a, qubit *b, qubit *d) {
     cx(a[3], d[6]);
 }
 
+/**
+ * Toffoli：14，CNOT：52
+ * Toffoli深度：2
+ * 电路深度：18
+ */
 void qt3_inv(qubit *a, qubit *b, qubit *d) {
 	cx(a[3], d[6]);
     cx(a[1], d[6]);
@@ -190,6 +208,10 @@ void qt3_inv(qubit *a, qubit *b, qubit *d) {
     cx(a[1], d[6]);
 }
 
+/**
+ * CNOT：3
+ * 电路深度：3
+ */
 void qt4(qubit *a) {
 	cx(a[2], a[0]);
 	cx(a[3], a[1]);
@@ -199,6 +221,10 @@ void qt4(qubit *a) {
 	std::swap(a[1], a[3]);
 }
 
+/**
+ * CNOT：3
+ * 电路深度：3
+ */
 void qt4_inv(qubit *a) {
 	std::swap(a[1], a[3]);
 	std::swap(a[0], a[2]);
@@ -208,6 +234,11 @@ void qt4_inv(qubit *a) {
 	cx(a[2], a[0]);
 }
 
+/**
+ * Toffoli：9，CNOT：29
+ * Toffoli深度：2
+ * 电路深度：18
+ */
 void qt8(qubit *a, qubit *d) {
 	cx(a[2], d[2]);
     cx(a[3], d[2]);
@@ -253,6 +284,11 @@ void qt8(qubit *a, qubit *d) {
     std::swap(d[9], a[0]);
 }
 
+/**
+ * Toffoli：9，CNOT：29
+ * Toffoli深度：2
+ * 电路深度：18
+ */
 void qt8_inv(qubit *a, qubit *d) {
 	std::swap(d[9], a[0]);
     std::swap(d[10], a[1]);
@@ -298,6 +334,11 @@ void qt8_inv(qubit *a, qubit *d) {
     cx(a[2], d[2]);
 }
 
+/**
+ * Toffoli：14，CNOT：55
+ * Toffoli深度：2
+ * 电路深度：18
+ */
 void qt10(qubit *a, qubit *b, qubit *t, qubit *d) {
     cx(t[3], t[2]);
 	cx(t[2], t[0]);
@@ -371,6 +412,10 @@ void qt10(qubit *a, qubit *b, qubit *t, qubit *d) {
     cx(a[3], d[2]);
 }
 
+/**
+ * CNOT：14
+ * 电路深度：9
+ */
 void qt11() {
 	cx(y[6], y[2]);
 	cx(y[7], y[4]);
@@ -400,6 +445,10 @@ void qt11() {
 	qx(y[7]);
 }
 
+/**
+ * CNOT：14
+ * 电路深度：8
+ */
 void qt12() {
 	std::swap(y[6], y[4]);
 	std::swap(y[2], y[4]);

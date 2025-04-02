@@ -216,6 +216,8 @@ void qt4_inv(qubit *a) {
 
 /**
  * (a[4], d[21] = 0) -> (a'[4], d'[15], c[6] = 0)
+ * QAND：9，CNOT：29
+ * T深度：2
  */
 void qt16(qubit *a, qubit *d) {
 	cx(a[2], d[2]);
@@ -264,6 +266,8 @@ void qt16(qubit *a, qubit *d) {
 
 /**
  * (a'[4], d'[15]) -> (a[4], d[15] = 0)
+ * QAND_1：9，CNOT：29
+ * T深度：0
  */
 void qt16_inv(qubit *a, qubit *d) {
     std::swap(d[9], a[0]);

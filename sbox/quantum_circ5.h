@@ -54,6 +54,8 @@ void qt1_inv() {
 
 /**
  * (a[4], b[4], d[28] = 0) -> (a[4], b[4], [a * b][4], d[24] = 0)
+ * QAND：9，QAND_1：5，CNOT：52
+ * T深度：1
  */
 void qt13(qubit *a, qubit *b, qubit *d) {
 	cx(a[1], d[6]);
@@ -126,6 +128,8 @@ void qt13(qubit *a, qubit *b, qubit *d) {
 
 /**
  * (a[4], b[4], [a * b][4], d[24] = 0) -> (a[4], b[4], d[28] = 0)
+ * QAND：5，QAND_1：9，CNOT：52
+ * T深度：1
  */
 void qt13_inv(qubit *a, qubit *b, qubit *d) {
 	cx(a[3], d[6]);
@@ -216,6 +220,8 @@ void qt4_inv(qubit *a) {
 
 /**
  * (a[4], c[6] = 0) -> (a'[4], c'[5], 0)
+ * QAND：5，CNOT：69，NOT：4
+ * T深度：5
  */
 void qt14(qubit *a, qubit *c) {
 	qx(a[1]);
@@ -304,6 +310,8 @@ void qt14(qubit *a, qubit *c) {
 
 /**
  * (a'[4], c'[5]) -> (a[4], c[5] = 0)
+ * QAND_1：5，CNOT：69，NOT：4
+ * T深度：0
  */
 void qt14_inv(qubit *a, qubit *c) {
 	std::swap(c[2], a[3]);
@@ -392,6 +400,8 @@ void qt14_inv(qubit *a, qubit *c) {
 
 /**
  * (a[4], b[4], c[4], d[28] = 0) -> (a[4], b[4], [c ^ (a * b)][4], d[28] = 0)
+ * QAND：9，QAND_1：9，CNOT：56
+ * T深度：1
  */
 void qt15(qubit *a, qubit *b, qubit *c, qubit *d) {
 	cx(a[1], d[6]);
