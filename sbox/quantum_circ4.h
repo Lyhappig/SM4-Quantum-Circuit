@@ -182,7 +182,46 @@ void qt9(qubit *a, qubit *b, qubit *d) {
     cx(d[2], d[0]);
     cx(d[1], d[0]);
     cx(d[3], d[1]);
-	qt2(a, b, d);
+
+	cx(a[3], a[1]);
+    cx(b[3], b[1]);
+    cx(a[2], a[0]);
+    cx(b[2], b[0]);
+    cx(a[3], a[2]);
+    cx(b[3], b[2]);
+    cx(a[1], a[0]);
+    cx(b[1], b[0]);
+    ccx(a[0], b[0], d[0]);
+    ccx(a[1], b[1], d[1]);
+    ccx(a[2], b[2], d[2]);
+    ccx(a[3], b[3], d[3]);
+    cx(b[1], b[0]);
+    cx(a[1], a[0]);
+    cx(a[3], a[2]);
+    cx(b[3], b[2]);
+    cx(a[2], a[0]);
+    cx(b[2], b[0]);
+    cx(a[3], a[1]);
+    cx(b[3], b[1]);
+    cx(d[3], d[2]);
+    ccx(a[2], b[2], d[3]);
+    cx(d[3], d[1]);
+    cx(d[3], d[2]);
+    cx(d[1], d[0]);
+    cx(d[2], d[0]);
+    cx(a[0], a[2]);
+    cx(b[0], b[2]);
+    cx(a[1], a[0]);
+    cx(b[1], b[0]);
+    ccx(a[2], b[2], d[1]);
+    ccx(a[0], b[0], d[3]);
+    cx(a[1], a[0]);
+    cx(b[1], b[0]);
+    cx(a[0], a[2]);
+    cx(b[0], b[2]);
+    cx(d[3], d[2]);
+    ccx(a[0], b[0], d[2]);
+    ccx(a[1], b[1], d[3]);
 }
 
 void qt11() {
@@ -214,6 +253,30 @@ void qt11() {
 	qx(y[7]);
 }
 
+void qt12() {
+	std::swap(y[6], y[4]);
+	std::swap(y[2], y[4]);
+	std::swap(y[1], y[4]);
+	std::swap(y[3], y[4]);
+	std::swap(y[7], y[4]);
+	std::swap(y[5], y[4]);
+	std::swap(y[0], y[4]);
+	cx(y[0], y[1]);
+	cx(y[1], y[3]);
+	cx(y[4], y[6]);
+	cx(y[6], y[0]);
+	cx(y[0], y[5]);
+	cx(y[3], y[0]);
+	cx(y[5], y[7]);
+	cx(y[7], y[0]);
+	cx(y[2], y[5]);
+	cx(y[3], y[2]);
+	cx(y[5], y[1]);
+	cx(y[4], y[3]);
+	cx(y[7], y[4]);
+	cx(y[6], y[2]);
+}
+
 int solve(uint8_t alpha, uint8_t delta) {
 	for (int i = 0; i < 8; i++) {
 		x[i] = (alpha >> (7 - i)) & 1;
@@ -225,6 +288,7 @@ int solve(uint8_t alpha, uint8_t delta) {
 	qubit *d0 = y + 4;
 	// begin
 	qt1();
+	qt12();
 
 	cx(a0[0], a1[0]);
 	cx(a0[1], a1[1]);

@@ -252,6 +252,30 @@ void qt11() {
 	qx(y[7]);
 }
 
+void qt12() {
+	std::swap(y[6], y[4]);
+	std::swap(y[2], y[4]);
+	std::swap(y[1], y[4]);
+	std::swap(y[3], y[4]);
+	std::swap(y[7], y[4]);
+	std::swap(y[5], y[4]);
+	std::swap(y[0], y[4]);
+	cx(y[0], y[1]);
+	cx(y[1], y[3]);
+	cx(y[4], y[6]);
+	cx(y[6], y[0]);
+	cx(y[0], y[5]);
+	cx(y[3], y[0]);
+	cx(y[5], y[7]);
+	cx(y[7], y[0]);
+	cx(y[2], y[5]);
+	cx(y[3], y[2]);
+	cx(y[5], y[1]);
+	cx(y[4], y[3]);
+	cx(y[7], y[4]);
+	cx(y[6], y[2]);
+}
+
 int solve(uint8_t alpha, uint8_t delta) {
 	for (int i = 0; i < 8; i++) {
 		x[i] = (alpha >> (7 - i)) & 1;
@@ -263,6 +287,7 @@ int solve(uint8_t alpha, uint8_t delta) {
 	qubit *d0 = y + 4;
 	// begin
 	qt1();
+    qt12();
 
 	cx(a0[0], a1[0]);
 	cx(a0[1], a1[1]);

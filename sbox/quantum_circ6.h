@@ -55,7 +55,7 @@ void qt1_inv() {
 /**
  * (a[4], b[4], d[28] = 0) -> (a[4], b[4], [a * b][4], d[24] = 0)
  */
-void qt12(qubit *a, qubit *b, qubit *d) {
+void qt13(qubit *a, qubit *b, qubit *d) {
 	cx(a[1], d[6]);
     cx(a[3], d[6]);
     cx(b[1], d[7]);
@@ -127,7 +127,7 @@ void qt12(qubit *a, qubit *b, qubit *d) {
 /**
  * (a[4], b[4], [a * b][4], d[24] = 0) -> (a[4], b[4], d[28] = 0)
  */
-void qt12_inv(qubit *a, qubit *b, qubit *d) {
+void qt13_inv(qubit *a, qubit *b, qubit *d) {
 	cx(a[3], d[6]);
     cx(a[1], d[6]);
     cx(b[3], d[7]);
@@ -217,7 +217,7 @@ void qt4_inv(qubit *a) {
 /**
  * (a[4], d[21] = 0) -> (a'[4], d'[15], c[6] = 0)
  */
-void qt15(qubit *a, qubit *d) {
+void qt16(qubit *a, qubit *d) {
 	cx(a[2], d[2]);
 	cx(a[3], d[2]);
 	cx(a[0], d[1]);
@@ -265,7 +265,7 @@ void qt15(qubit *a, qubit *d) {
 /**
  * (a'[4], d'[15]) -> (a[4], d[15] = 0)
  */
-void qt15_inv(qubit *a, qubit *d) {
+void qt16_inv(qubit *a, qubit *d) {
     std::swap(d[9], a[0]);
 	std::swap(d[10], a[1]);
 	std::swap(d[12], a[2]);
@@ -313,7 +313,7 @@ void qt15_inv(qubit *a, qubit *d) {
 /**
  * (a[4], b[4], c[4], d[28] = 0) -> (a[4], b[4], [c ^ (a * b)][4], d[28] = 0)
  */
-void qt14(qubit *a, qubit *b, qubit *c, qubit *d) {
+void qt15(qubit *a, qubit *b, qubit *c, qubit *d) {
 	cx(a[1], d[6]);
 	cx(a[3], d[6]);
 	cx(b[1], d[7]);
@@ -419,6 +419,30 @@ void qt11() {
 	qx(y[7]);
 }
 
+void qt12() {
+	std::swap(y[6], y[4]);
+	std::swap(y[2], y[4]);
+	std::swap(y[1], y[4]);
+	std::swap(y[3], y[4]);
+	std::swap(y[7], y[4]);
+	std::swap(y[5], y[4]);
+	std::swap(y[0], y[4]);
+	cx(y[0], y[1]);
+	cx(y[1], y[3]);
+	cx(y[4], y[6]);
+	cx(y[6], y[0]);
+	cx(y[0], y[5]);
+	cx(y[3], y[0]);
+	cx(y[5], y[7]);
+	cx(y[7], y[0]);
+	cx(y[2], y[5]);
+	cx(y[3], y[2]);
+	cx(y[5], y[1]);
+	cx(y[4], y[3]);
+	cx(y[7], y[4]);
+	cx(y[6], y[2]);
+}
+
 int solve(uint8_t alpha, uint8_t delta) {
 	for (int i = 0; i < 8; i++) {
 		x[i] = (alpha >> (7 - i)) & 1;
@@ -435,13 +459,14 @@ int solve(uint8_t alpha, uint8_t delta) {
 	qubit *d0 = y + 4;
 	// begin
 	qt1();
+	qt12();
 
 	cx(a0[0], a1[0]);
 	cx(a0[1], a1[1]);
 	cx(a0[2], a1[2]);
 	cx(a0[3], a1[3]);
 
-	qt12(a1, a0, t0);
+	qt13(a1, a0, t0);
 
 	{
 		for (int i = 4; i < 28; i++) {
@@ -464,7 +489,7 @@ int solve(uint8_t alpha, uint8_t delta) {
 	cx(a0[3], aux[3]);
 	qt4_inv(a0);
 
-	qt15(t0, t1);
+	qt16(t0, t1);
 
 	{
 		for (int i = 15; i < 21; i++) {
@@ -475,7 +500,7 @@ int solve(uint8_t alpha, uint8_t delta) {
 		}
 	}
 
-	qt14(a0, t0, d1, t2);
+	qt15(a0, t0, d1, t2);
 
 	{
 		for (int i = 0; i < 28; i++) {
@@ -486,7 +511,7 @@ int solve(uint8_t alpha, uint8_t delta) {
 		}
 	}
 
-	qt14(a1, t0, d0, t2);
+	qt15(a1, t0, d0, t2);
 
 	{
 		for (int i = 0; i < 28; i++) {
@@ -497,7 +522,7 @@ int solve(uint8_t alpha, uint8_t delta) {
 		}
 	}
 
-	qt15_inv(t0, t1);
+	qt16_inv(t0, t1);
 
 	{
 		for (int i = 0; i < 5; i++) {
@@ -522,7 +547,7 @@ int solve(uint8_t alpha, uint8_t delta) {
 	cx(a1[2], a0[2]);
 	cx(a1[3], a0[3]);
 
-	qt12_inv(a1, a0, t0);
+	qt13_inv(a1, a0, t0);
 
 	{
 		for (int i = 0; i < 28; i++) {

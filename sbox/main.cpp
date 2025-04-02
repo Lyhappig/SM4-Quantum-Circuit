@@ -30,7 +30,7 @@ uint8_t sm4_sbox[256] = {
 
 bool check_sbox(uint8_t delta) {
     uint8_t sbox[256];
-    qcirc6::get_qunatum_sbox6(sbox, delta);
+    qcirc1::get_qunatum_sbox1(sbox, delta);
     for (int i = 0; i < 256; ++i) {
         if (sbox[i] != (delta ^ sm4_sbox[i])) {
             printf("%02X, %02X\n", sbox[i], delta ^ sm4_sbox[i]);
@@ -42,7 +42,7 @@ bool check_sbox(uint8_t delta) {
 
 int main() {
     uint8_t sbox[256];
-    qcirc6::get_qunatum_sbox6(sbox);
+    qcirc1::get_qunatum_sbox1(sbox);
     bool flag = true;
     for (int i = 0; i < 256; ++i) {
         if (sbox[i] != sm4_sbox[i]) {
