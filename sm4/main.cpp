@@ -1,6 +1,9 @@
 #include <bits/stdc++.h>
+#include <random>
+
 #include "sm4_local.h"
 #include "sm4_qt_circ1.h"
+#include "sm4_qt_circ6.h"
 
 uint8_t sm4_sbox[256] = {
     0xD6, 0x90, 0xE9, 0xFE, 0xCC, 0xE1, 0x3D, 0xB7, 0x16, 0xB6, 0x14, 0xC2, 0x28, 0xFB, 0x2C, 0x05,
@@ -22,8 +25,9 @@ uint8_t sm4_sbox[256] = {
 };
 
 bool check_sbox(uint8_t delta) {
+    const int aux_num = 47;
     uint8_t sbox[256] = {0};
-    qubit aux[4] = {0};
+    qubit aux[aux_num] = {0};
     for (int i = 0; i < 256; ++i) {
         qubit x[8] = {0}, y[8] = {0};
         for (int j = 0; j < 8; ++j) {
@@ -31,7 +35,7 @@ bool check_sbox(uint8_t delta) {
             y[j] = (delta >> (7 - j)) & 1;
         }
 
-        sbox_circ1::S(x, y, aux);
+        sbox_circ6::S(x, y, aux);
 
         int val = 0;
 		for (int j = 0; j < 8; j++) {
@@ -93,42 +97,57 @@ void bits2uchar(uint8_t *x, qubit y[128]) {
 
 uint8_t key[16] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0xA, 0xB, 0xC, 0xD, 0xE, 0xF};
 uint8_t plain[16] = {'h', 'e', 'l', 'l', 'o', '!', 'I', ' ', 'a', 'm', ' ', 'h', 'u', 's', 't', '.'};
+uint8_t cipher1[16], cipher2[16], cipher3[16];
 
 void openssl_sample() {
-    uint8_t cipher[16];
 	SM4_KEY sk;
     openssl_sm4::SM4_set_key(key, &sk);
-    openssl_sm4::SM4_encrypt(plain, cipher, &sk);
-    output("plain", plain);
-    output("openssl crypt", cipher);
+    openssl_sm4::SM4_encrypt(plain, cipher1, &sk);
+    // output("plain", plain);
+    // output("openssl crypt0", cipher1);
 }
 
-void quantum_sample() {
-    qubit mk[128];
-    uchar2bits(mk, key);
-    qubit rk[32][32];
-    sm4_circ1::sm4_key_schedule(mk, rk);
-    qubit x[128];
-    uchar2bits(x, plain);
-    sm4_circ1::sm4_encrypt(x, rk);
-    uint8_t cipher[16];
-    bits2uchar(cipher, x);
-    output("plain", plain);
-    output("quantum crypt", cipher);
-}
-
-int main() {
-    // openssl_sample();
-    // quantum_sample();
-
+void test_sm4_qt_circ1() {
     qubit x[128], mk[128];
     uchar2bits(x, plain);
     uchar2bits(mk, key);
     sm4_circ1::sm4_subroutine_quantum(x, mk);
+    bits2uchar(cipher2, x);
+    // output("plain", plain);
+    // output("quantum crypt1", cipher2);
+}
 
-    uint8_t cipher[16];
-    bits2uchar(cipher, x);
-    output("plain", plain);
-    output("quantum crypt", cipher);
+void test_sm4_qt_circ6() {
+    qubit x[128], mk[128];
+    uchar2bits(x, plain);
+    uchar2bits(mk, key);
+    sm4_circ6::sm4_subroutine_quantum(x, mk);
+    bits2uchar(cipher3, x);
+    // output("plain", plain);
+    // output("quantum crypt2", cipher3);
+}
+
+int main() {
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dis(0, RAND_MAX);
+
+    int T = 2025;
+    while (T--) {
+        for (int i = 0; i < 16; i++) {
+            plain[i] = (dis(gen) * dis(gen) + 998244353) % 256;
+            key[i] = (dis(gen) * dis(gen) + dis(gen)) % 256;
+        }
+        openssl_sample();
+        test_sm4_qt_circ1();
+        test_sm4_qt_circ6();
+        for (int i = 0; i < 16; i++) {
+            if (cipher1[i] != cipher2[i] || cipher1[i] != cipher3[i]) {
+                puts("Quantum crypt error!");
+                exit(-1);
+            }
+        }
+    }
+    puts("OK");
     return 0;
 }

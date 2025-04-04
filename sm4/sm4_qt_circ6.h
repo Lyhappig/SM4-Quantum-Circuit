@@ -1,12 +1,15 @@
-#ifndef SM4_QUANTUM_CIRC1_H
-#define SM4_QUANTUM_CIRC1_H
+#ifndef SM4_QUANTUM_CIRC6_H
+#define SM4_QUANTUM_CIRC6_H
 
-#include "sbox_qt_circ1.h"
+#include <vector>
+#include <thread>
+#include "sbox_qt_circ6.h"
 
 #define SM4_SIZE 128
 #define ROUND_SIZE 32
+#define PARALLEL_SBOX_NUM 8
 
-namespace sm4_circ1 {
+namespace sm4_circ6 {
 static const uint32_t FK[4] = {0xa3b1bac6, 0x56aa3350, 0x677d9197, 0xb27022dc};
 
 static const uint32_t CK[32] = {
@@ -20,7 +23,7 @@ static const uint32_t CK[32] = {
 	0x10171E25, 0x2C333A41, 0x484F565D, 0x646B7279
 };
 
-static qubit aux[4];
+static qubit aux[PARALLEL_SBOX_NUM][47];
 
 void key_rotl_swap(qubit *x) {
 	qubit y[32];
@@ -424,10 +427,16 @@ void sm4_key_round(qubit *K0, qubit *K1, qubit *K2, qubit *K3, uint32_t CKi) {
 	ccx32(K2, K1);
 	ccx32(K3, K1);
 	key_L_inv(K0);
-	sbox_circ1::S(a0, b0, aux);
-	sbox_circ1::S(a1, b1, aux);
-	sbox_circ1::S(a2, b2, aux);
-	sbox_circ1::S(a3, b3, aux);
+	{
+		std::vector<std::thread> threads(PARALLEL_SBOX_NUM / 2);
+		threads[0] = std::thread(sbox_circ6::S, a0, b0, aux[0]);
+		threads[1] = std::thread(sbox_circ6::S, a1, b1, aux[1]);
+		threads[2] = std::thread(sbox_circ6::S, a2, b2, aux[2]);
+		threads[3] = std::thread(sbox_circ6::S, a3, b3, aux[3]);
+		for (auto &thread : threads) {
+			thread.join();
+		}
+	}
 	key_L(K0);
 	ccx32(K3, K1);
 	ccx32(K2, K1);
@@ -436,25 +445,6 @@ void sm4_key_round(qubit *K0, qubit *K1, qubit *K2, qubit *K3, uint32_t CKi) {
 	qswap(K0, K1, ROUND_SIZE);
 	qswap(K1, K2, ROUND_SIZE);
 	qswap(K2, K3, ROUND_SIZE);
-}
-
-void sm4_key_schedule(qubit *mk, qubit (*key)[32]) {
-	qubit *a = mk;
-	qubit *b = mk + 32;
-	qubit *c = mk + 64;
-	qubit *d = mk + 96;
-
-	qx32(FK[0], a);
-	qx32(FK[1], b);
-	qx32(FK[2], c);
-	qx32(FK[3], d);
-	for (int i = 0; i < 32; ++i) {
-		sm4_key_round(a, b, c, d, CK[i]);
-		// rk[i] = K4
-		for (int j = 0; j < 32; j++) {
-			key[i][j] = d[j];
-		}
-	}
 }
 
 void sm4_enc_round(qubit *X0, qubit *X1, qubit *X2, qubit *X3, qubit *rk) {
@@ -471,10 +461,16 @@ void sm4_enc_round(qubit *X0, qubit *X1, qubit *X2, qubit *X3, qubit *rk) {
 	ccx32(X2, X1);
 	ccx32(X3, X1);
 	enc_L_inv(X0);
-	sbox_circ1::S(a0, b0, aux);
-	sbox_circ1::S(a1, b1, aux);
-	sbox_circ1::S(a2, b2, aux);
-	sbox_circ1::S(a3, b3, aux);
+	{
+		std::vector<std::thread> threads(PARALLEL_SBOX_NUM / 2);
+		threads[0] = std::thread(sbox_circ6::S, a0, b0, aux[0]);
+		threads[1] = std::thread(sbox_circ6::S, a1, b1, aux[1]);
+		threads[2] = std::thread(sbox_circ6::S, a2, b2, aux[2]);
+		threads[3] = std::thread(sbox_circ6::S, a3, b3, aux[3]);
+		for (auto &thread : threads) {
+			thread.join();
+		}
+	}
 	enc_L(X0);
 	ccx32(X3, X1);
 	ccx32(X2, X1);
@@ -483,18 +479,6 @@ void sm4_enc_round(qubit *X0, qubit *X1, qubit *X2, qubit *X3, qubit *rk) {
 	qswap(X0, X1, ROUND_SIZE);
 	qswap(X1, X2, ROUND_SIZE);
 	qswap(X2, X3, ROUND_SIZE);
-}
-
-void sm4_encrypt(qubit *x, qubit (*key)[32]) {
-	qubit *a = x;
-	qubit *b = x + 32;
-	qubit *c = x + 64;
-	qubit *d = x + 96;
-	for (int i = 0; i < 32; ++i) {
-		sm4_enc_round(a, b, c, d, key[i]);
-	}
-	qswap(a, d, ROUND_SIZE);
-	qswap(b, c, ROUND_SIZE);
 }
 
 void sm4_union_round(qubit *X0, qubit *X1, qubit *X2, qubit *X3, qubit *K0, qubit *K1, qubit *K2, qubit *K3, uint32_t CKi) {
@@ -527,14 +511,18 @@ void sm4_union_round(qubit *X0, qubit *X1, qubit *X2, qubit *X3, qubit *K0, qubi
 	key_L_inv(K0);
 
 	{
-		sbox_circ1::S(a0, b0, aux);
-		sbox_circ1::S(a1, b1, aux);
-		sbox_circ1::S(a2, b2, aux);
-		sbox_circ1::S(a3, b3, aux);
-		sbox_circ1::S(c0, d0, aux);
-		sbox_circ1::S(c1, d1, aux);
-		sbox_circ1::S(c2, d2, aux);
-		sbox_circ1::S(c3, d3, aux);
+		std::vector<std::thread> threads(PARALLEL_SBOX_NUM);
+		threads[0] = std::thread(sbox_circ6::S, a0, b0, aux[0]);
+		threads[1] = std::thread(sbox_circ6::S, a1, b1, aux[1]);
+		threads[2] = std::thread(sbox_circ6::S, a2, b2, aux[2]);
+		threads[3] = std::thread(sbox_circ6::S, a3, b3, aux[3]);
+		threads[4] = std::thread(sbox_circ6::S, c0, d0, aux[4]);
+		threads[5] = std::thread(sbox_circ6::S, c1, d1, aux[5]);
+		threads[6] = std::thread(sbox_circ6::S, c2, d2, aux[6]);
+		threads[7] = std::thread(sbox_circ6::S, c3, d3, aux[7]);
+		for (auto &thread : threads) {
+			thread.join();
+		}
 	}
 
 	key_L(K0);
