@@ -73,7 +73,7 @@ void test_sbox() {
 void output(const char *title, uint8_t *s) {
     printf("%s: ", title);
     for(int i = 0; i < 16; i++) {
-		printf("%02X", (int)s[i]);
+		printf("%02X ", (int)s[i]);
 	}
     puts("");
 }
@@ -103,8 +103,9 @@ void openssl_sample() {
 	SM4_KEY sk;
     openssl_sm4::SM4_set_key(key, &sk);
     openssl_sm4::SM4_encrypt(plain, cipher1, &sk);
-    // output("plain", plain);
-    // output("openssl crypt0", cipher1);
+    output("plain", plain);
+    output("key", key);
+    output("OpenSSL crypt             ", cipher1);
 }
 
 void test_sm4_qt_circ1() {
@@ -113,8 +114,7 @@ void test_sm4_qt_circ1() {
     uchar2bits(mk, key);
     sm4_circ1::sm4_subroutine_quantum(x, mk);
     bits2uchar(cipher2, x);
-    // output("plain", plain);
-    // output("quantum crypt1", cipher2);
+    output("260 qubits quantum circuit", cipher2);
 }
 
 void test_sm4_qt_circ6() {
@@ -123,11 +123,10 @@ void test_sm4_qt_circ6() {
     uchar2bits(mk, key);
     sm4_circ6::sm4_subroutine_quantum(x, mk);
     bits2uchar(cipher3, x);
-    // output("plain", plain);
-    // output("quantum crypt2", cipher3);
+    output("632 qubits quantum circuit", cipher3);
 }
 
-int main() {
+void comprehensive_assessment() {
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_int_distribution<> dis(0, RAND_MAX);
@@ -149,5 +148,11 @@ int main() {
         }
     }
     puts("OK");
+}
+
+int main() {
+    openssl_sample();
+    // test_sm4_qt_circ1();
+    test_sm4_qt_circ6();
     return 0;
 }
