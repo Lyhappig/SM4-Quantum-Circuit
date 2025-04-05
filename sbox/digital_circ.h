@@ -164,7 +164,7 @@ int solve(uint16_t alpha) {
 	return beta;
 }
 
-void get_digital_sbox(uint16_t sbox[256]) {
+void get_digital_sbox(uint8_t sbox[256]) {
 	for (int i = 0; i < 256; ++i) {
         sbox[i] = solve(i);
     }

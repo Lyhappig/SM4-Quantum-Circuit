@@ -40,27 +40,31 @@ bool check_sbox(uint8_t delta) {
     return true;
 }
 
-int main() {
+void check_quantum_sbox() {
     uint8_t sbox[256];
     qcirc1::get_qunatum_sbox1(sbox);
-    bool flag = true;
-    for (int i = 0; i < 256; ++i) {
-        if (sbox[i] != sm4_sbox[i]) {
-            flag = false;
-        }
-    }
-    printf("%s", flag ? "True" : "False");
-	for (int i = 0; i < 256; ++i) {
-		if (i % 16 == 0) puts("");
-		printf("%02X ", sbox[i]);
-	}
-    puts("");
-    for (int k = 1; k < 256; k++) {
+    for (int k = 0; k < 256; k++) {
         if (!check_sbox(k)) {
             printf("Faild in delta = %d\n ", k);
             exit(-1);
         }
     }
     puts("All test cases passed");
+}
+
+int main() {
+    uint8_t sbox[256];
+    dcirc::get_digital_sbox(sbox);
+    bool flag = true;
+    for (int i = 0; i < 256; ++i) {
+        if (sbox[i] != sm4_sbox[i]) {
+            flag = false;
+        }
+    }
+    printf("%s", flag ? "Correct Sbox" : "Wrong Sbox");
+	for (int i = 0; i < 256; ++i) {
+		if (i % 16 == 0) puts("");
+		printf("%02X ", sbox[i]);
+	}
 	return 0;
 }
